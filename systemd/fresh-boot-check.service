@@ -1,0 +1,15 @@
+[Unit]
+Description=Boot freshness check - isolate to rescue if system has been offline too long
+DefaultDependencies=no
+After=local-fs.target
+Before=sysinit.target network-pre.target
+ConditionPathExists=/var/lib/.boot-freshness-last-seen
+
+[Service]
+Type=oneshot
+EnvironmentFile=-/etc/default/boot-freshness
+ExecStart=/usr/lib/boot-freshness-check
+RemainAfterExit=yes
+
+[Install]
+WantedBy=sysinit.target

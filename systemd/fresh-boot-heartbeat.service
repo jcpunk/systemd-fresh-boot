@@ -1,0 +1,7 @@
+[Unit]
+Description=Boot freshness heartbeat - periodic timestamp update
+After=multi-user.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/touch /var/lib/.boot-freshness-last-seen

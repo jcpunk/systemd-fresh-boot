@@ -1,0 +1,27 @@
+#!/bin/bash
+# ConditionPathExists in the unit guarantees the timestamp file exists.
+# The mtime of the file is the sole state.
+
+set -euo pipefail
+
+TIMESTAMP_FILE=/var/lib/.boot-freshness-last-seen
+MAX_OFFLINE_DAYS=${BOOT_FRESHNESS_MAX_OFFLINE_DAYS:-93}
+MAX_OFFLINE_SECONDS=$(( MAX_OFFLINE_DAYS * 86400 ))
+
+log() { systemd-cat -t boot-freshness-check -p "$1" -- "$2"; }
+
+isolate_rescue() {
+    log warning "$1 Isolating to rescue.target."
+    setsid systemctl --no-block isolate rescue.target
+    exit 0
+}
+
+last_seen=$(stat -c %Y "$TIMESTAMP_FILE")
+now=$(date +%s)
+elapsed=$(( now - last_seen ))
+
+if (( elapsed > MAX_OFFLINE_SECONDS )); then
+    isolate_rescue "System offline for $(( elapsed / 86400 )) days (threshold: ${MAX_OFFLINE_DAYS})."
+fi
+
+log info "System was last seen $(( elapsed / 86400 )) days ago. OK."
