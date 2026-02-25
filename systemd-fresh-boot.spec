@@ -1,5 +1,5 @@
 Name:           systemd-fresh-boot
-Version:        0.1.0
+Version:        0.1.1
 Release:        1%{?dist}
 Summary:        Service units to block boot for systems that haven't booted in a while
 License:        LGPL-2.1-or-later
