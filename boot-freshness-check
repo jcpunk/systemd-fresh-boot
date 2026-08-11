@@ -8,7 +8,7 @@ TIMESTAMP_FILE=/var/lib/.boot-freshness-last-seen
 MAX_OFFLINE_DAYS=${BOOT_FRESHNESS_MAX_OFFLINE_DAYS:-93}
 MAX_OFFLINE_SECONDS=$(( MAX_OFFLINE_DAYS * 86400 ))
 
-log() { systemd-cat -t boot-freshness-check -p "$1" -- "$2"; }
+log() { echo "$2" | systemd-cat -t boot-freshness-check -p "$1"; }
 
 isolate_rescue() {
     log warning "$1 Isolating to rescue.target."
